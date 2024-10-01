@@ -3,8 +3,6 @@ from tkinter import messagebox
 
 import bcrypt
 
-# Comentario
-
 # Crear ventana principal
 root = tk.Tk()
 root.title("Autenticación de Usuario")
