@@ -20,8 +20,7 @@ def validar_contrasena():
 
     # Hasheado simulado de la contraseña correcta
     contrasena_correcta = "pass1234"
-    hashed = bcrypt.hashpw(contrasena_correcta.encode('utf-8'),
-                           bcrypt.gensalt())
+    hashed = bcrypt.hashpw(contrasena_correcta.encode('utf-8'), bcrypt.gensalt())
 
     # Verificar si la contraseña ingresada es válida
     if bcrypt.checkpw(contrasena.encode('utf-8'), hashed):
@@ -40,8 +39,7 @@ if __name__ == '__main__':
     # Etiqueta y campo para la contraseña
     label_contrasena = tk.Label(root, text="Contraseña:")
     label_contrasena.pack(pady=5)
-    entry_contrasena = tk.Entry(root,
-                                show="*")  # Ocultar la contraseña con '*'
+    entry_contrasena = tk.Entry(root, show="*")  # Ocultar la contraseña con '*'
     entry_contrasena.pack(pady=5)
 
     # Botón para validar la contraseña
