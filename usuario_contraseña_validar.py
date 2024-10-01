@@ -17,7 +17,7 @@ def validar_contrasena():
     contrasena = entry_contrasena.get()
 
     # Hasheado simulado de la contraseña correcta
-    contrasena_correcta = "mi_contraseña_segura"
+    contrasena_correcta = "pass1234"
     hashed = bcrypt.hashpw(contrasena_correcta.encode('utf-8'), bcrypt.gensalt())
 
     # Verificar si la contraseña ingresada es válida
