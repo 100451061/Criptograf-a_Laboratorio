@@ -4,14 +4,28 @@ from tkinter import messagebox  # Para mostrar mensajes emergentes
 import bcrypt  # Para manejar el hash de contraseñas y su validación
 
 
+# Función para leer la contraseña desde un archivo
+# en el archivo contraseña.txt aparece '1234'
+def leer_contraseña_desde_archivo():
+    try:
+        with open("contraseña.txt", "r") as file:
+            return file.read().strip()  # Leemos el archivo y eliminamos posibles saltos de línea
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No se encontró el archivo de la contraseña.")
+        return None
+
+
 # Función que se ejecuta cuando el usuario intenta validar su contraseña
 def validar_contraseña():
     # Obtenemos el texto que ha sido ingresado en los campos de usuario y contraseña
     usuario = entry_usuario.get()
     contraseña = entry_contraseña.get()
 
-    # nuestra contraseña (según la profe, esto tendría que estar en una base de datos)
-    contraseña_correcta = "pass1234"
+    # Leer la contraseña correcta desde el archivo
+    contraseña_correcta = leer_contraseña_desde_archivo()
+
+    if not contraseña_correcta:
+        return  # Si no hay contraseña (error al leer), salimos de la función
 
     # Hash de la contraseña correcta usando bcrypt.
     hashed = bcrypt.hashpw(contraseña_correcta.encode('utf-8'), bcrypt.gensalt())
