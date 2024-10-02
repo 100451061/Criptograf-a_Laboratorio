@@ -1,18 +1,28 @@
+import json
+import os
 import tkinter as tk  # Para interfaces gráficas
-from tkinter import messagebox  # Para mostrar mensajes emergentes
+from tkinter import messagebox
 
 import bcrypt  # Para manejar el hash de contraseñas y su validación
 
 
-# Función para leer la contraseña desde un archivo
-# en el archivo contraseña.txt aparece '1234'
+# Función para leer la contraseña desde un archivo JSON
 def leer_contraseña_desde_archivo():
     try:
-        with open("contraseña.txt", "r") as file:
-            return file.read().strip()  # Leemos el archivo y eliminamos posibles saltos de línea
+        # Ruta absoluta o relativa al archivo JSON
+        ruta_absoluta = os.path.abspath("contraseña.json")
+        print(f"Buscando el archivo en: {ruta_absoluta}")
+
+        # Cargar el contenido del archivo JSON
+        with open("contraseña.json", "r") as file:
+            data = json.load(file)
+            return data["contraseña_correcta"]  # Retornar el valor de la contraseña
     except FileNotFoundError:
+        # Mostrar mensaje de error si el archivo no se encuentra
         messagebox.showerror("Error", "No se encontró el archivo de la contraseña.")
-        return None
+    except KeyError:
+        # Mostrar mensaje de error si no existe la clave correcta en el JSON
+        messagebox.showerror("Error", "La clave 'contraseña_correcta' no se encuentra en el archivo JSON.")
 
 
 # Función que se ejecuta cuando el usuario intenta validar su contraseña
@@ -21,16 +31,22 @@ def validar_contraseña():
     usuario = entry_usuario.get()
     contraseña = entry_contraseña.get()
 
-    # Leer la contraseña correcta desde el archivo
+    # Validar que el campo de usuario no esté vacío  (Obligatorio)
+    # (Si el campo está vacío, se muestra un mensaje de error y no se realiza ninguna otra acción.)
+    if not usuario:
+        messagebox.showerror("Error", "El campo de usuario no puede estar vacío.")
+        return None
+
+    # Leer la contraseña correcta desde el archivo JSON
     contraseña_correcta = leer_contraseña_desde_archivo()
 
     if not contraseña_correcta:
-        return  # Si no hay contraseña (error al leer), salimos de la función
+        return None  # Si no se puede leer la contraseña, salir de la función
 
-    # Hash de la contraseña correcta usando bcrypt.
+    # Hash de la contraseña correcta usando bcrypt
     hashed = bcrypt.hashpw(contraseña_correcta.encode('utf-8'), bcrypt.gensalt())
 
-    # Verificamos si la contraseña ingresada por el usuario coincide con la contraseña correcta hasheada previamente
+    # Verificamos si la contraseña ingresada por el usuario coincide con la correcta
     if bcrypt.checkpw(contraseña.encode('utf-8'), hashed):
         # Si la contraseña es correcta
         messagebox.showinfo("Éxito", f"Bienvenido {usuario}!")
@@ -40,32 +56,31 @@ def validar_contraseña():
 
 
 if __name__ == '__main__':
-    # Crea la ventana principal de la aplicación
+    # Crear la ventana principal de la aplicación
     root = tk.Tk()
-    root.title("Autenticación de Usuario")  # Eso sería el título de nuestra ventana
+    root.title("Autenticación de Usuario")  # Título de la ventana
 
     root.geometry("1000x500")  # Dimensiones de la ventana
 
-    # Creamos una etiqueta (texto que aparecerá) para el campo de usuario
+    # Crear etiqueta para el nombre de usuario
     label_usuario = tk.Label(root, text="Usuario:")
-    label_usuario.pack(pady=5)  # Mostramos con pack la etiqueta y le damos un pequeño espacio vertical
+    label_usuario.pack(pady=5)  # Mostrar la etiqueta con espacio vertical
 
-    # Creamos un campo de entrada donde el usuario pueda escribir su nombre de usuario
+    # Crear campo de entrada para el usuario
     entry_usuario = tk.Entry(root)
-    entry_usuario.pack(pady=5)  # Mostramos el campo de entrada con pack
+    entry_usuario.pack(pady=5)
 
-    # Creamos una etiqueta para el campo de contraseña
+    # Crear etiqueta para la contraseña
     label_contraseña = tk.Label(root, text="Contraseña:")
     label_contraseña.pack(pady=5)
 
-    # Creamos un campo de entrada para la contraseña.
-    # show="*" hace que se oculta el texto mientras escribimos
+    # Crear campo de entrada para la contraseña con ocultación de caracteres
     entry_contraseña = tk.Entry(root, show="*")
     entry_contraseña.pack(pady=5)
 
-    # Crear un botón que, cuando se hace clic, llama a la función validar_contraseña()
+    # Crear botón para validar la contraseña
     btn_validar = tk.Button(root, text="Validar", command=validar_contraseña)
-    btn_validar.pack(pady=20)  # Mostramos con pack el botón y le damos un espacio vertical
+    btn_validar.pack(pady=20)
 
-    # Esta línea muestra la ventana y espera a que el usuario interactúe con ella
+    # Iniciar el loop de la ventana
     root.mainloop()
