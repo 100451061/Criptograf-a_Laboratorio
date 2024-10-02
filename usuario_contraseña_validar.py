@@ -4,7 +4,6 @@ from tkinter import messagebox  # Para mostrar mensajes emergentes
 import bcrypt  # Para manejar el hash de contraseñas y su validación
 
 
-# Pablo
 # Función que se ejecuta cuando el usuario intenta validar su contraseña
 def validar_contraseña():
     # Obtenemos el texto que ha sido ingresado en los campos de usuario y contraseña
