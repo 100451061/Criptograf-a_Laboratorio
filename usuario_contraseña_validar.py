@@ -1,9 +1,12 @@
 import json
 import os
+import sys
 import tkinter as tk  # Para interfaces gráficas
 from tkinter import messagebox
 
 import bcrypt  # Para manejar el hash de contraseñas y su validación
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 # Función para leer la contraseña desde un archivo JSON
@@ -12,7 +15,6 @@ def leer_contraseña_desde_archivo():
         # Ruta absoluta o relativa al archivo JSON
         ruta_absoluta = os.path.abspath("contraseña.json")
         print(f"Buscando el archivo en: {ruta_absoluta}")
-
         # Cargar el contenido del archivo JSON
         with open("contraseña.json", "r") as file:
             data = json.load(file)
